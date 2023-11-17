@@ -1,0 +1,99 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             Int          @id @default(autoincrement())
+  fullname       String
+  email          String       @unique
+  password       String
+  address        String
+  role           Role         @default(USER)
+  balance        Int          @default(0)
+  favoriteFoods  Food[]       @relation("FavoritedBy")
+  orders         Order[]
+  transactions   Transaction[]
+  bills          Bills[]  
+}
+
+model Food {
+  id            Int        @id @default(autoincrement())
+  name          String
+  rating        Float
+  category      Category   @relation(fields: [categoryId], references: [id])
+  image         String
+  price         Int
+  favoritedBy   User[]     @relation("FavoritedBy")
+  orders        Order[]    @relation("OrderedItem")
+  bills         BillItem[]
+  categoryId    Int
+  orderItems    OrderItem[]
+}
+
+model Category {
+  id     Int      @id @default(autoincrement())
+  name   String
+  image  String
+  foods  Food[]
+}
+
+model Order {
+  id              Int        @id @default(autoincrement())
+  user            User       @relation(fields: [userId], references: [id])
+  userId          Int
+  items           OrderItem[]
+  status          String
+  deliveryAddress String
+  paymentMethod   String
+  food            Food[]     @relation("OrderedItem")
+}
+
+model OrderItem {
+  id       Int   @id @default(autoincrement())
+  order    Order @relation(fields: [orderId], references: [id])
+  orderId  Int
+  food     Food  @relation(fields: [foodId], references: [id])
+  foodId   Int
+  quantity Int
+}
+
+model Bills {
+  id              Int        @id @default(autoincrement())
+  user            User       @relation(fields: [userId], references: [id])
+  userId          Int
+  items           BillItem[]
+  status          String
+  deliveryAddress String
+  paymentMethod   String
+}
+
+model BillItem {
+  id       Int   @id @default(autoincrement())
+  bill     Bills @relation(fields: [billId], references: [id])
+  billId   Int
+  food     Food  @relation(fields: [foodId], references: [id])
+  foodId   Int
+  quantity Int
+}
+
+model Transaction {
+  id     Int    @id @default(autoincrement())
+  user   User   @relation(fields: [userId], references: [id])
+  userId Int
+  amount Int
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+
