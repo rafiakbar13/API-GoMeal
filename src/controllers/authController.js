@@ -31,6 +31,20 @@ export const register = async (req, res) => {
         password: hashedPassword,
         address,
         balance: 0,
+        role: "USER",
+
+        favoriteFoods: {
+          create: [],
+        },
+        orders: {
+          create: [],
+        },
+        transactions: {
+          create: [],
+        },
+        bills: {
+          create: [],
+        },
       },
     });
     res

@@ -3,6 +3,9 @@ import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import authRoute from "./routes/auth.js";
+import userRoute from "./routes/users.js";
+import categoriesRoute from "./routes/categories.js";
+import foodRoute from "./routes/food.js";
 dotenv.config();
 
 const app = express();
@@ -21,6 +24,9 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors(corsOptions));
 app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/users", userRoute);
+app.use("/api/v1/categories", categoriesRoute);
+app.use("/api/v1/foods", foodRoute);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
