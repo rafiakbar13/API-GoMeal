@@ -6,6 +6,7 @@ import authRoute from "./routes/auth.js";
 import userRoute from "./routes/users.js";
 import categoriesRoute from "./routes/categories.js";
 import foodRoute from "./routes/food.js";
+import orderRouter from "./routes/order.js";
 dotenv.config();
 
 const app = express();
@@ -27,6 +28,7 @@ app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/users", userRoute);
 app.use("/api/v1/categories", categoriesRoute);
 app.use("/api/v1/foods", foodRoute);
+app.use("/api/v1/orders", orderRouter);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
