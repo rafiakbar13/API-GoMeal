@@ -42,14 +42,11 @@ export const register = async (req, res) => {
         transactions: {
           create: [],
         },
-        bills: {
-          create: [],
-        },
       },
     });
     res
       .status(201)
-      .json({ success: true, message: "User created", data: user });
+      .json({ success: true, message: "User Sucessfully created", data: user });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal server error" });

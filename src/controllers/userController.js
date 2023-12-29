@@ -13,7 +13,6 @@ export const getAllUsers = async (req, res) => {
         favoriteFoods: true,
         orders: true,
         transactions: true,
-        bills: true,
       },
     });
     res.status(200).json({
@@ -35,7 +34,7 @@ export const getSingleUser = async (req, res) => {
   try {
     const user = await prisma.user.findUnique({
       where: {
-        id: parseInt(userId),
+        id: userId,
       },
       select: {
         id: true,
@@ -47,7 +46,6 @@ export const getSingleUser = async (req, res) => {
         favoriteFoods: true,
         orders: true,
         transactions: true,
-        bills: true,
       },
     });
     res.status(200).json({
@@ -69,7 +67,7 @@ export const updateUser = async (req, res) => {
   try {
     const updatedUser = await prisma.user.update({
       where: {
-        id: parseInt(userId),
+        id: userId,
       },
       data: {
         ...req.body,
@@ -94,7 +92,7 @@ export const deleteUser = async (req, res) => {
   try {
     const user = await prisma.user.delete({
       where: {
-        id: parseInt(userId),
+        id: userId,
       },
     });
     if (!user) {
@@ -121,7 +119,7 @@ export const getUserProfile = async (req, res) => {
   try {
     const user = await prisma.user.findUnique({
       where: {
-        id: parseInt(userId),
+        id: userId,
       },
       select: {
         id: true,
@@ -133,7 +131,6 @@ export const getUserProfile = async (req, res) => {
         favoriteFoods: true,
         orders: true,
         transactions: true,
-        bills: true,
       },
     });
     res.status(200).json({

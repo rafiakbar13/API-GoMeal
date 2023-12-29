@@ -26,7 +26,35 @@ export const getOrders = async (req, res) => {
   }
 };
 
-export const getOrder = async (req, res) => {};
+export const getOrder = async (req, res) => {
+  const orderId = req.params.id;
+  try {
+    const order = await prisma.order.findUnique({
+      where: {
+        id: orderId,
+      },
+      include: {
+        food: true,
+      },
+    });
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+    res.status(200).json({
+      success: true,
+      message: "Order fetched successfully",
+      data: order,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "Error while fetching order",
+    });
+  }
+};
 
 export const createOrder = async (req, res) => {
   const { userId, items, status, deliveryAddress, paymentMethod } = req.body;
@@ -53,9 +81,57 @@ export const createOrder = async (req, res) => {
   }
 };
 
-export const updateOrder = async (req, res) => {};
+export const updateOrder = async (req, res) => {
+  const orderId = req.params.id;
+  const { status } = req.body;
+  try {
+    const order = await prisma.order.update({
+      where: {
+        id: orderId,
+      },
+      data: {
+        status,
+      },
+    });
+    res.status(200).json({
+      success: true,
+      message: "Order updated successfully",
+      data: order,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "Error while updating order",
+    });
+  }
+};
 
-export const deleteOrder = async (req, res) => {};
+export const deleteOrder = async (req, res) => {
+  const orderId = req.params.id;
+  try {
+    const order = await prisma.order.delete({
+      where: {
+        id: orderId,
+      },
+    });
+    if (!order) {
+      res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+    res.status(200).json({
+      success: true,
+      message: "Order deleted successfully",
+      data: order,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "Error while deleting order",
+    });
+  }
+};
 
 // const { foodId, quantity, status, deliveryAddress, paymentMethod, user } =
 //   req.body;

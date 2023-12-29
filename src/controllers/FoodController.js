@@ -38,7 +38,7 @@ export const getFoods = async (req, res) => {
 };
 
 export const getFood = async (req, res) => {
-  const foodId = parseInt(req.params.id);
+  const foodId = req.params.id;
   try {
     const food = await prisma.food.findUnique({
       where: {
@@ -93,7 +93,7 @@ export const createFood = async (req, res) => {
 };
 
 export const updateFood = async (req, res) => {
-  const foodId = parseInt(req.params.id);
+  const foodId = req.params.id;
   const { name, price, image } = req.body;
   try {
     const food = await prisma.food.update({
@@ -120,7 +120,7 @@ export const updateFood = async (req, res) => {
 };
 
 export const deleteFood = async (req, res) => {
-  const foodId = parseInt(req.params.id);
+  const foodId = req.params.id;
   try {
     const food = await prisma.food.delete({
       where: {
