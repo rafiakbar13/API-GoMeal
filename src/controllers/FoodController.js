@@ -1,4 +1,3 @@
-import e from "express";
 import prisma from "../db/prisma.js";
 
 export const getFoods = async (req, res) => {
@@ -65,6 +64,25 @@ export const getFood = async (req, res) => {
 export const createFood = async (req, res) => {
   const { name, category, price, image, rating } = req.body;
   try {
+    const existingFood = await prisma.food.findFirst({
+      where: {
+        name: { equals: name },
+      },
+    });
+    if (existingFood) {
+      return res.status(400).json({
+        success: false,
+        message: "Food already exists",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      success: false,
+      message: "Error while creating food",
+    });
+  }
+  try {
     const food = await prisma.food.create({
       data: {
         name,
@@ -78,6 +96,7 @@ export const createFood = async (req, res) => {
         },
       },
     });
+
     res.status(201).json({
       success: true,
       message: "Food created successfully",

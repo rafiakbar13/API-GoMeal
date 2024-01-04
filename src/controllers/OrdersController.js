@@ -57,17 +57,11 @@ export const getOrder = async (req, res) => {
 };
 
 export const createOrder = async (req, res) => {
-  const { userId, items, status, deliveryAddress, paymentMethod } = req.body;
+  const { userId, status, deliveryAddress, paymentMethod } = req.body;
   try {
     const order = await prisma.order.create({
       data: {
         user: { connect: { id: userId } },
-        items: {
-          create: items.map((item) => ({
-            food: { connect: { id: item.foodId } },
-            quantity: item.quantity,
-          })),
-        },
         status,
         deliveryAddress,
         paymentMethod,

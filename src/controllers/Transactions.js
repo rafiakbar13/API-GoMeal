@@ -1,15 +1,28 @@
+import prisma from "../db/prisma.js";
+
 // Create Transaction
 export const createTransaction = async (req, res) => {
-  const { amount, status, type, userId } = req.body;
+  const { amount, type, userId } = req.body;
   try {
     const transaction = await prisma.transaction.create({
       data: {
         amount,
-        status,
         type,
         userId,
       },
     });
+
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        balance: {
+          increment: amount,
+        },
+      },
+    });
+
     res.status(201).json({
       success: true,
       message: "Transaction created successfully",
