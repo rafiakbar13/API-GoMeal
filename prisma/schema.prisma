@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -32,19 +32,42 @@ model Food {
   id            String        @id @default(uuid())
   name          String
   price         Int
-  image         String
-  rating        Float
+  image         String?
+  rating        Float?
+
+  quantity      Int
+  total         Int
   
-  
-  category      Category   @relation(fields: [categoryId], references: [id])
+  category      Category?   @relation(fields: [categoryId], references: [id])
   categoryId    String
 
-  favoritedBy   User[]     @relation("FavoritedBy")
-  orders        Order[]    @relation("OrderedItem")
+  favoritedBy   User[]      @relation("FavoritedBy")
+  orderId       Int         
+  order         Order[]     @relation("OrderItems", fields: [orderId], references: [id])
 
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
 }
+
+model Order {
+  id              Int        @id @default(autoincrement())
+  status          String
+  deliveryAddress String
+  paymentMethod   String
+  total           Int
+  
+  user            User       @relation(fields: [userId], references: [id])
+  userId          String
+  items           Food[]     @relation("OrderItems", fields: [itemsId], references: [id]) 
+
+     
+  
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+}
+
+
+
 
 model Category {
   id     String      @id @default(uuid())
@@ -56,21 +79,6 @@ model Category {
   updatedAt DateTime   @updatedAt
 }
 
-model Order {
-  id              Int        @id @default(autoincrement())
-  status          String
-  deliveryAddress String
-  paymentMethod   String
-  quantity        Int
-  Total           Int
-  
-  user            User       @relation(fields: [userId], references: [id])
-  userId          String
-  food            Food[]     @relation("OrderedItem")
-
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
-}
 
 model Transaction {
   id     Int    @id @default(autoincrement())

@@ -57,21 +57,42 @@ export const getOrder = async (req, res) => {
 };
 
 export const createOrder = async (req, res) => {
-  const { userId, status, deliveryAddress, paymentMethod } = req.body;
   try {
-    const order = await prisma.order.create({
+    const {
+      userId,
+      items,
+      total,
+      status,
+      deliveryAddress,
+      paymentMethod,
+      quantity,
+    } = req.body;
+
+    // Simpan order ke database
+    const createdOrder = await prisma.order.create({
       data: {
-        user: { connect: { id: userId } },
+        userId,
+        food: {
+          create: items.map((item) => ({
+            id: item.foodId,
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+            total: item.price * item.quantity,
+          })),
+        },
+        total,
         status,
         deliveryAddress,
         paymentMethod,
+        quantity,
       },
-      include: { items: true, user: true },
     });
-    res.status(201).json({ success: true, data: order });
+
+    res.json({ message: "Order created successfully", order: createdOrder });
   } catch (error) {
-    console.error(error);
-    res.status(400).json({ success: false, message: "Error creating order" });
+    console.error("Error creating order:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
